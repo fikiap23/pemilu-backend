@@ -1,4 +1,4 @@
-import User from '../models/userModel.js'
+import Admin from '../models/adminModel.js'
 import bcrypt from 'bcryptjs'
 import generateTokenAndSetCookie from '../utils/helpers/generateTokenAndSetCookie.js'
 const signupUser = async (req, res) => {
@@ -7,9 +7,9 @@ const signupUser = async (req, res) => {
     const { username, password, repassword } = req.body
 
     // cek apakah user ada di db
-    const user = await User.findOne({ username: username })
-    if (user) {
-      return res.status(400).json({ error: 'User already exists' })
+    const admin = await Admin.findOne({ username: username })
+    if (admin) {
+      return res.status(400).json({ error: 'Admin already exists' })
     }
 
     // cek apakah password dan repassword sama
@@ -21,20 +21,20 @@ const signupUser = async (req, res) => {
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(password, salt)
 
-    // buat user baru
-    const newUser = new User({
+    // buat Admin baru
+    const newAdmin = new Admin({
       username,
       password: hashedPassword,
     })
-    await newUser.save()
+    await newAdmin.save()
 
     // buat response
-    if (newUser) {
+    if (newAdmin) {
       // generate token
-      generateTokenAndSetCookie(newUser._id, res)
+      generateTokenAndSetCookie(newAdmin._id, res)
       res.status(201).json({
-        _id: newUser._id,
-        username: newUser.username,
+        _id: newAdmin._id,
+        username: newAdmin.username,
       })
     } else {
       res.status(400).json({ error: 'Invalid user data' })
@@ -48,17 +48,17 @@ const loginUser = async (req, res) => {
   try {
     let { username, password } = req.body // 'username' can be either username or email
     username = username.toLowerCase()
-    const user = await User.findOne({ username: username })
+    const admin = await Admin.findOne({ username: username })
 
     const isPasswordCorrect = await bcrypt.compare(
       password,
-      user?.password || ''
+      admin?.password || ''
     )
 
-    if (!user || !isPasswordCorrect)
+    if (!admin || !isPasswordCorrect)
       return res.status(400).json({ error: 'Invalid username or password' })
 
-    let token = generateTokenAndSetCookie(user._id, res)
+    let token = generateTokenAndSetCookie(admin._id, res)
 
     res.status(200).json({
       _id: user._id,

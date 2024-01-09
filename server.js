@@ -2,7 +2,7 @@ import express from 'express'
 import dotenv from 'dotenv'
 import connectDB from './db/connectDB.js'
 import cookieParser from 'cookie-parser'
-import userRoutes from './routes/userRoutes.js'
+import adminRoutes from './routes/adminRoutes.js'
 import cors from 'cors'
 
 dotenv.config()
@@ -21,7 +21,7 @@ app.use(express.urlencoded({ extended: true })) // for parsing application/x-www
 app.use(cookieParser())
 
 // Routes
-app.use('/v1/api/users', userRoutes)
+app.use('/api/v1/admins', adminRoutes)
 
 app.listen(PORT, () => {
   console.log(`Server started at  http://localhost:${PORT}`)

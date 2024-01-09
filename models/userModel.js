@@ -7,7 +7,6 @@ const userSchema = mongoose.Schema(
       required: true,
       unique: true,
     },
-    village: {},
     password: {
       type: String,
       minLength: 6,

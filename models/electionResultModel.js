@@ -3,21 +3,36 @@ import Regency from './Regency.js'
 
 const { Schema } = mongoose
 
+const candidateSchema = new Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  party: {
+    type: String,
+    required: true,
+  },
+  // Tambahkan informasi lain yang mungkin diperlukan untuk kandidat
+})
+
 const electionResultSchema = new Schema(
   {
-    nomor_urut: {
+    election_type: {
+      type: String,
+      required: true,
+      default: 'legislative', // Menandakan tipe pemilihan (contoh: legislative)
+    },
+    total_seats: {
       type: Number,
       required: true,
     },
-    name_candidate_1: {
-      type: String,
-      required: true,
-    },
-    name_candidate_2: {
-      type: String,
-      required: true,
-    },
-    results_regency: [Regency.schema],
+    candidates: [candidateSchema], // Array kandidat yang bersaing
+    results_regency: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Regency',
+      },
+    ],
     total_votes: {
       type: Number,
       required: true,

@@ -1,5 +1,4 @@
 import mongoose from 'mongoose'
-import District from './District.js'
 
 const { Schema } = mongoose
 
@@ -16,7 +15,12 @@ const regencySchema = new Schema({
     type: Number,
     required: true,
   },
-  districts: [District.schema],
+  districts: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'District',
+    },
+  ],
 })
 
 const Regency = mongoose.model('Regency', regencySchema)

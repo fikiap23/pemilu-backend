@@ -1,5 +1,4 @@
 import mongoose from 'mongoose'
-import Village from './Village.js'
 
 const { Schema } = mongoose
 
@@ -16,7 +15,12 @@ const districtSchema = new Schema({
     type: Number,
     required: true,
   },
-  villages: [Village.schema],
+  villages: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Village',
+    },
+  ],
 })
 
 const District = mongoose.model('District', districtSchema)

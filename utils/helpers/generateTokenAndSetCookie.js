@@ -5,12 +5,10 @@ const generateTokenAndSetCookie = (userId, res) => {
     expiresIn: '15d',
   })
 
-  res.cookie('auth-token', token, {
+  res.cookie('jwt', token, {
     httpOnly: true, // more secure
     maxAge: 15 * 24 * 60 * 60 * 1000, // 15 days
-    // sameSite: 'strict', // CSRF
-    // sameSite: 'none',
-    // secure: true,
+    sameSite: 'strict', // CSRF
   })
 
   return token

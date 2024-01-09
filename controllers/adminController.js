@@ -58,13 +58,12 @@ const loginUser = async (req, res) => {
     if (!admin || !isPasswordCorrect)
       return res.status(400).json({ error: 'Invalid username or password' })
 
-    let token = generateTokenAndSetCookie(admin._id, res)
+    generateTokenAndSetCookie(admin._id, res)
 
     res.status(200).json({
       _id: admin._id,
       name: admin.name,
       username: admin.username,
-      token: token,
     })
   } catch (error) {
     res.status(500).json({ error: error.message })

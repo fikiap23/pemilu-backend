@@ -61,9 +61,9 @@ const loginUser = async (req, res) => {
     let token = generateTokenAndSetCookie(admin._id, res)
 
     res.status(200).json({
-      _id: user._id,
-      name: user.name,
-      username: user.username,
+      _id: admin._id,
+      name: admin.name,
+      username: admin.username,
       token: token,
     })
   } catch (error) {

@@ -1,22 +1,31 @@
 import mongoose from 'mongoose'
 
-const { Schema } = mongoose
-
-const villageSchema = new Schema({
-  name: {
+const VillageSchema = mongoose.Schema({
+  village_name: {
     type: String,
     required: true,
   },
-  code: {
-    type: String,
+  total_voters: {
+    type: Number,
     required: true,
   },
-  total_votes_subdistrict: {
+  valid_ballots: [
+    {
+      partyId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Party',
+      },
+      numberOfVotes: {
+        type: Number,
+        default: 0,
+      },
+    },
+  ],
+  invalid_ballots: {
     type: Number,
     required: true,
   },
 })
 
-const Village = mongoose.model('Village', villageSchema)
-
+const Village = mongoose.model('Village', VillageSchema)
 export default Village

@@ -1,11 +1,11 @@
 import mongoose from 'mongoose'
 
 const PartySchema = mongoose.Schema({
-  name: {
+  party_name: {
     type: String,
     required: true,
   },
-  number: {
+  party_number: {
     type: Number,
     required: true,
   },

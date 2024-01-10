@@ -9,12 +9,6 @@ const PartySchema = mongoose.Schema({
     type: Number,
     required: true,
   },
-  candidates: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Candidate',
-    },
-  ],
 })
 
 const Party = mongoose.model('Party', PartySchema)

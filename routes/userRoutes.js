@@ -13,6 +13,5 @@ router.post(
   adminController.createNewVillage
 )
 router.post('/createParty', protectRouteAdmin, adminController.createNewParty)
-router.post('/createUser', protectRouteAdmin, adminController.createNewUser)
 
 export default router

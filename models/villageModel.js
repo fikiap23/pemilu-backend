@@ -23,7 +23,7 @@ const VillageSchema = mongoose.Schema({
   ],
   invalid_ballots: {
     type: Number,
-    required: true,
+    default: 0,
   },
 })
 

@@ -7,9 +7,20 @@ const router = express.Router()
 router.post('/login', userController.loginUser)
 router.post('/logout', userController.logoutUser)
 router.post(
-  '/addValidBallots',
+  '/validBallots',
   protectUserRoute,
   userController.addVotesToValidBallots
+)
+
+router.put(
+  '/validBallots',
+  protectUserRoute,
+  userController.updateVotesToValidBallots
+)
+router.patch(
+  '/invalidBallots',
+  protectUserRoute,
+  userController.addVoteToInvalidBallots
 )
 
 export default router

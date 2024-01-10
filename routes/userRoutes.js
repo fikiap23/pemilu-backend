@@ -1,6 +1,7 @@
 import express from 'express'
 import userController from '../controllers/userController.js'
 import villageController from '../controllers/villageController.js'
+import districtController from '../controllers/districtController.js'
 import { protectUserRoute } from '../middlewares/protectRoute.js'
 
 const router = express.Router()
@@ -30,7 +31,7 @@ router.patch(
 )
 
 //! route district
-// router.get('/districts', protectUserRoute, userController.getDistricts)
-// router.get('/districts/:id', protectUserRoute, userController.getDistrictById)
+router.get('/districts', districtController.getDistricts)
+router.get('/districts/:id', districtController.getVotesSummaryByDistrict)
 
 export default router

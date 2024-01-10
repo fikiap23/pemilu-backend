@@ -1,9 +1,14 @@
 import mongoose from 'mongoose'
+
 const VillageSchema = mongoose.Schema(
   {
     village_name: {
       type: String,
       required: true,
+    },
+    district_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'District',
     },
     total_voters: {
       type: Number,
@@ -35,8 +40,16 @@ const DistrictSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-
-    villages: [VillageSchema],
+    regency_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Regency',
+    },
+    villages: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Village',
+      },
+    ],
   },
   { timestamps: true }
 )
@@ -47,12 +60,18 @@ const RegencySchema = mongoose.Schema(
       type: String,
       required: true,
     },
-
-    districts: [DistrictSchema],
+    districts: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'District',
+      },
+    ],
   },
   { timestamps: true }
 )
 
-const Region = mongoose.model('Region', RegencySchema)
+const Village = mongoose.model('Village', VillageSchema)
+const District = mongoose.model('District', DistrictSchema)
+const Regency = mongoose.model('Regency', RegencySchema)
 
-export default Region
+export { Village, District, Regency }

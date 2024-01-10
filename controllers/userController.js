@@ -1,4 +1,5 @@
 import User from '../models/userModel.js'
+import Village from '../models/villageModel.js'
 import bcrypt from 'bcryptjs'
 import generateTokenAndSetCookie from '../utils/helpers/generateTokenAndSetCookie.js'
 
@@ -27,6 +28,58 @@ const userController = {
     } catch (error) {
       res.status(500).json({ error: error.message })
       console.log('Error in loginUser: ', error.message)
+    }
+  },
+
+  addVotesToValidBallots: async (req, res) => {
+    try {
+      const { partyId } = req.body
+      const userId = req.user._id
+
+      const user = await User.findById(userId)
+
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' })
+      }
+
+      const villageId = user.villageId
+
+      // Cek apakah partyId sudah ada di dalam array validBallots
+      const village = await Village.findById(villageId)
+
+      if (!village) {
+        return res.status(404).json({ error: 'Village not found' })
+      }
+
+      const existingBallotIndex = village.valid_ballots.findIndex(
+        (ballot) => String(ballot.partyId) === partyId
+      )
+
+      if (existingBallotIndex !== -1) {
+        // Jika partai sudah ada, tambahkan jumlah suara
+        await Village.updateOne(
+          { _id: villageId, 'valid_ballots.partyId': partyId },
+          { $inc: { 'valid_ballots.$.numberOfVotes': 1 } }
+        )
+      } else {
+        // Jika partai belum ada, tambahkan partai baru ke dalam valid_ballots
+        await Village.updateOne(
+          { _id: villageId },
+          {
+            $push: {
+              valid_ballots: {
+                partyId,
+                numberOfVotes: 1,
+              },
+            },
+          }
+        )
+      }
+
+      res.status(200).json({ message: 'Votes added successfully' })
+    } catch (error) {
+      res.status(500).json({ error: error.message })
+      console.log('Error in addVotesToValidBallots: ', error.message)
     }
   },
 

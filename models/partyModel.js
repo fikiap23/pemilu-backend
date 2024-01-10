@@ -1,12 +1,19 @@
 import mongoose from 'mongoose'
 
 const PartySchema = mongoose.Schema({
-  party_name: {
+  code: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+
+  path: {
     type: String,
     required: true,
   },
-  party_number: {
-    type: Number,
+
+  name: {
+    type: String,
     required: true,
   },
 })

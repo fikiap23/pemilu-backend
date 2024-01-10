@@ -120,10 +120,10 @@ const adminController = {
 
   createNewVillage: async (req, res) => {
     try {
-      let { village_name, total_voters } = req.body
+      let { village_name, total_voters, disterict } = req.body
 
       // Validate input
-      if (!village_name || !total_voters) {
+      if (!village_name || !total_voters || !disterict) {
         return res.status(400).json({ error: 'Missing required fields' })
       }
       village_name = village_name.toLowerCase()
@@ -136,6 +136,7 @@ const adminController = {
 
       // Create new village
       const newVillage = new Village({
+        disterict,
         village_name,
         total_voters,
       })
@@ -143,6 +144,7 @@ const adminController = {
 
       res.status(201).json({
         _id: newVillage._id,
+        disterict: newVillage.disterict,
         village_name: newVillage.village_name,
         total_voters: newVillage.total_voters,
       })
@@ -154,19 +156,34 @@ const adminController = {
 
   createNewParty: async (req, res) => {
     try {
-      const { party_name, party_number } = req.body
+      let { name, code, path } = req.body
+
+      // Validate input
+      if (!name || !code || !path) {
+        return res.status(400).json({ error: 'Missing required fields' })
+      }
+      name = name.toLowerCase()
+      code = code.toLowerCase()
+
+      // Check if the party already exists
+      const existingParty = await Party.findOne({ code })
+      if (existingParty) {
+        return res.status(400).json({ error: 'Party already exists' })
+      }
 
       // Create new party
       const newParty = new Party({
-        party_name,
-        party_number,
+        name,
+        code,
+        path,
       })
       await newParty.save()
 
       res.status(201).json({
         _id: newParty._id,
-        party_name: newParty.party_name,
-        party_number: newParty.party_number,
+        name: newParty.name,
+        path: newParty.path,
+        code: newParty.code,
       })
     } catch (error) {
       res.status(500).json({ error: error.message })

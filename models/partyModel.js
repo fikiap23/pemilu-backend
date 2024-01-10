@@ -12,6 +12,11 @@ const PartySchema = mongoose.Schema({
     required: true,
   },
 
+  logoUrl: {
+    type: String,
+    required: true,
+  },
+
   name: {
     type: String,
     required: true,

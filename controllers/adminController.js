@@ -134,7 +134,7 @@ const adminController = {
   //* kelola partai
   createNewParty: async (req, res) => {
     try {
-      let { name, code, path } = req.body
+      let { name, code, path, logoUrl } = req.body
 
       // Validate input
       if (!name || !code || !path) {
@@ -151,6 +151,7 @@ const adminController = {
 
       // Create new party
       const newParty = new Party({
+        logoUrl,
         name,
         code,
         path,
@@ -159,6 +160,7 @@ const adminController = {
 
       res.status(201).json({
         _id: newParty._id,
+        logoUrl: newParty.logoUrl,
         name: newParty.name,
         path: newParty.path,
         code: newParty.code,

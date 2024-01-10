@@ -3,7 +3,7 @@ import dotenv from 'dotenv'
 import connectDB from './db/connectDB.js'
 import cookieParser from 'cookie-parser'
 import adminRoutes from './routes/adminRoutes.js'
-// import userRoutes from './routes/userRoutes.js'
+import userRoutes from './routes/userRoutes.js'
 import cors from 'cors'
 
 dotenv.config()
@@ -23,7 +23,7 @@ app.use(cookieParser())
 
 // Routes
 app.use('/api/v1/admins', adminRoutes)
-// app.use('/api/v1/users', userRoutes)
+app.use('/api/v1/users', userRoutes)
 
 app.listen(PORT, () => {
   console.log(`Server started at  http://localhost:${PORT}`)

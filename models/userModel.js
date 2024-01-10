@@ -13,7 +13,7 @@ const userSchema = mongoose.Schema(
       required: true,
     },
 
-    villageId: {
+    village_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Village',
       required: true,

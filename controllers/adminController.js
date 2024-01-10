@@ -63,7 +63,7 @@ const adminController = {
       if (!admin || !isPasswordCorrect)
         return res.status(400).json({ error: 'Invalid username or password' })
 
-      generateTokenAndSetCookie(admin._id, res)
+      generateTokenAndSetCookie(admin._id, 'admin', res)
 
       res.status(200).json({
         _id: admin._id,

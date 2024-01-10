@@ -171,6 +171,19 @@ const adminController = {
     }
   },
 
+  getAllParties: async (req, res) => {
+    try {
+      // Retrieve all parties from the database
+      const allParties = await Party.find()
+
+      // Respond with the list of parties
+      res.status(200).json(allParties)
+    } catch (error) {
+      res.status(500).json({ error: error.message })
+      console.log('Error in getAllParties: ', error.message)
+    }
+  },
+
   //* kelola desa
   createNewVillage: async (req, res) => {
     try {

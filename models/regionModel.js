@@ -20,6 +20,9 @@ const VillageSchema = mongoose.Schema(
           type: mongoose.Schema.Types.ObjectId,
           ref: 'Party',
         },
+        code: {
+          type: String,
+        },
         numberOfVotes: {
           type: Number,
           default: 0,

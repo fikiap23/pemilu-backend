@@ -65,6 +65,7 @@ const villageController = {
           {
             $push: {
               valid_ballots: {
+                code: party.code,
                 partyId,
                 numberOfVotes,
               },
@@ -82,11 +83,14 @@ const villageController = {
 
   updateVotesToValidBallots: async (req, res) => {
     try {
-      const { partyId, numberOfVotes } = req.body
+      let { partyId, numberOfVotes } = req.body
       const userId = req.user._id
 
+      numberOfVotes = parseInt(numberOfVotes)
+      console.log('numberOfVotes: ', numberOfVotes)
+
       //   check input not null
-      if (!partyId || !numberOfVotes) {
+      if (!partyId) {
         return res.status(400).json({ error: 'All fields are required' })
       }
 

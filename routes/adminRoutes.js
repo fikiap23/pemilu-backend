@@ -13,6 +13,7 @@ router.post('/users', protectAdminRoute, adminController.createNewUser)
 
 // Route untuk kelola partai
 router.post('/parties', protectAdminRoute, adminController.createNewParty)
+router.get('/parties/all', adminController.getAllParties)
 
 // Route untuk kelola wilayah desa
 router.post('/villages', protectAdminRoute, adminController.createNewVillage)

@@ -89,15 +89,15 @@ const adminController = {
   //* kelola user
   createNewUser: async (req, res) => {
     try {
-      const { username, password, villageId } = req.body
+      const { username, password, village_id } = req.body
 
       // Validate input not null
-      if (!username || !password || !villageId) {
+      if (!username || !password || !village_id) {
         return res.status(400).json({ error: 'All fields are required' })
       }
 
       // check is village exists
-      const village = await Village.findById(villageId)
+      const village = await Village.findById(village_id)
       if (!village) {
         return res.status(400).json({ error: 'Village not found' })
       }
@@ -116,14 +116,14 @@ const adminController = {
       const newUser = new User({
         username,
         password: hashedPassword,
-        villageId,
+        village_id,
       })
       await newUser.save()
 
       res.status(201).json({
         _id: newUser._id,
         username: newUser.username,
-        villageId: newUser.villageId,
+        village_id: newUser.village_id,
       })
     } catch (error) {
       res.status(500).json({ error: error.message })

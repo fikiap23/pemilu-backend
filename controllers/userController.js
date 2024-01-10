@@ -1,221 +1,44 @@
-// import User from '../models/userModel.js'
-// import Village from '../models/villageModel.js'
-// import bcrypt from 'bcryptjs'
-// import generateTokenAndSetCookie from '../utils/helpers/generateTokenAndSetCookie.js'
+import User from '../models/userModel.js'
+import bcrypt from 'bcryptjs'
+import generateTokenAndSetCookie from '../utils/helpers/generateTokenAndSetCookie.js'
 
-// const userController = {
-//   loginUser: async (req, res) => {
-//     try {
-//       let { username, password } = req.body // 'username' can be either username or email
-//       username = username.toLowerCase()
-//       const user = await User.findOne({ username: username })
+const userController = {
+  loginUser: async (req, res) => {
+    try {
+      let { username, password } = req.body // 'username' can be either username or email
+      username = username.toLowerCase()
+      const user = await User.findOne({ username: username })
 
-//       const isPasswordCorrect = await bcrypt.compare(
-//         password,
-//         user?.password || ''
-//       )
+      const isPasswordCorrect = await bcrypt.compare(
+        password,
+        user?.password || ''
+      )
 
-//       if (!user || !isPasswordCorrect)
-//         return res.status(400).json({ error: 'Invalid username or password' })
+      if (!user || !isPasswordCorrect)
+        return res.status(400).json({ error: 'Invalid username or password' })
 
-//       generateTokenAndSetCookie(user._id, 'user', res)
+      generateTokenAndSetCookie(user._id, 'user', res)
 
-//       res.status(200).json({
-//         _id: user._id,
-//         villageId: user.villageId,
-//         username: user.username,
-//       })
-//     } catch (error) {
-//       res.status(500).json({ error: error.message })
-//       console.log('Error in loginUser: ', error.message)
-//     }
-//   },
+      res.status(200).json({
+        _id: user._id,
+        villageId: user.villageId,
+        username: user.username,
+      })
+    } catch (error) {
+      res.status(500).json({ error: error.message })
+      console.log('Error in loginUser: ', error.message)
+    }
+  },
 
-//   addVotesToValidBallots: async (req, res) => {
-//     try {
-//       const { partyId, numberOfVotes } = req.body
-//       const userId = req.user._id
+  logoutUser: (req, res) => {
+    try {
+      res.cookie('jwt', '', { maxAge: 1 })
+      res.status(200).json({ message: 'User logged out successfully' })
+    } catch (err) {
+      res.status(500).json({ error: err.message })
+      console.log('Error in logout: ', err.message)
+    }
+  },
+}
 
-//       const user = await User.findById(userId)
-
-//       if (!user) {
-//         return res.status(404).json({ error: 'User not found' })
-//       }
-
-//       const villageId = user.villageId
-
-//       // Cek apakah partyId sudah ada di dalam array validBallots
-//       const village = await Village.findById(villageId)
-
-//       if (!village) {
-//         return res.status(404).json({ error: 'Village not found' })
-//       }
-
-//       const existingBallotIndex = village.valid_ballots.findIndex(
-//         (ballot) => String(ballot.partyId) === partyId
-//       )
-
-//       if (existingBallotIndex !== -1) {
-//         /// Jika partai sudah ada, error karena partai sudah ada
-//         return res
-//           .status(400)
-//           .json({ error: 'Partai ini sudah di inputkan suaranya' })
-//       } else {
-//         // Jika partai belum ada, tambahkan partai baru ke dalam valid_ballot
-//         // limit valid_ballots
-//         const totalValidBallots = village.valid_ballots.reduce(
-//           (accumulator, currentBallot) =>
-//             accumulator + currentBallot.numberOfVotes,
-//           0
-//         )
-//         const validBallotsLimit =
-//           village.total_voters - village.invalid_ballots - totalValidBallots
-//         console.log('validBallotsLimit: ', validBallotsLimit)
-
-//         if (numberOfVotes > validBallotsLimit) {
-//           return res.status(400).json({ error: 'Invalid vote, too many votes' })
-//         }
-
-//         await Village.updateOne(
-//           { _id: villageId },
-//           {
-//             $push: {
-//               valid_ballots: {
-//                 partyId,
-//                 numberOfVotes,
-//               },
-//             },
-//           }
-//         )
-//       }
-
-//       res.status(200).json({ message: 'Votes added successfully' })
-//     } catch (error) {
-//       res.status(500).json({ error: error.message })
-//       console.log('Error in addVotesToValidBallots: ', error.message)
-//     }
-//   },
-
-//   updateVotesToValidBallots: async (req, res) => {
-//     try {
-//       const { partyId, numberOfVotes } = req.body
-//       const userId = req.user._id
-
-//       const user = await User.findById(userId)
-
-//       if (!user) {
-//         return res.status(404).json({ error: 'User not found' })
-//       }
-
-//       const villageId = user.villageId
-
-//       // Cek apakah partyId sudah ada di dalam array validBallots
-//       const village = await Village.findById(villageId)
-
-//       if (!village) {
-//         return res.status(404).json({ error: 'Village not found' })
-//       }
-
-//       const existingBallotIndex = village.valid_ballots.findIndex(
-//         (ballot) => String(ballot.partyId) === partyId
-//       )
-
-//       if (existingBallotIndex !== -1) {
-//         // Jika partai sudah ada
-//         const totalValidBallots = village.valid_ballots.reduce(
-//           (accumulator, currentBallot) =>
-//             accumulator + currentBallot.numberOfVotes,
-//           0
-//         )
-
-//         // Subtract the existing votes from the limit
-//         const validBallotsLimit =
-//           village.total_voters -
-//           village.invalid_ballots -
-//           totalValidBallots +
-//           village.valid_ballots[existingBallotIndex].numberOfVotes
-
-//         console.log('validBallotsLimit: ', validBallotsLimit)
-
-//         if (numberOfVotes > validBallotsLimit) {
-//           return res.status(400).json({ error: 'Invalid vote, too many votes' })
-//         }
-
-//         await Village.updateOne(
-//           { _id: villageId, 'valid_ballots.partyId': partyId },
-//           { $set: { 'valid_ballots.$.numberOfVotes': numberOfVotes } }
-//         )
-//       } else {
-//         // Jika partai belum ada
-//         return res
-//           .status(400)
-//           .json({ error: 'Partai ini belum di inputkan suaranya' })
-//       }
-
-//       res.status(200).json({ message: 'Votes added successfully' })
-//     } catch (error) {
-//       res.status(500).json({ error: error.message })
-//       console.log('Error in updateVotesToValidBallots: ', error.message)
-//     }
-//   },
-
-//   addVoteToInvalidBallots: async (req, res) => {
-//     try {
-//       const { numberOfinvalidBallots } = req.body
-//       const userId = req.user._id
-
-//       const user = await User.findById(userId)
-
-//       if (!user) {
-//         return res.status(404).json({ error: 'User not found' })
-//       }
-
-//       const villageId = user.villageId
-
-//       // Cek apakah partyId sudah ada di dalam array validBallots
-//       const village = await Village.findById(villageId)
-//       if (!village) {
-//         return res.status(404).json({ error: 'Village not found' })
-//       }
-
-//       const totalVoters = village.total_voters
-
-//       const totalValidBallots = village.valid_ballots.reduce(
-//         (accumulator, currentBallot) =>
-//           accumulator + currentBallot.numberOfVotes,
-//         0
-//       )
-
-//       // limit invalid_ballots
-//       const invalidBallotsLimit = totalVoters - totalValidBallots
-//       console.log('invalidBallotsLimit: ', invalidBallotsLimit)
-
-//       if (numberOfinvalidBallots > invalidBallotsLimit) {
-//         return res.status(400).json({ error: 'Invalid vote, too many votes' })
-//       }
-
-//       // Update jumlah suara invalid_ballots pada Village
-//       await Village.updateOne(
-//         { _id: villageId },
-//         { $set: { invalid_ballots: numberOfinvalidBallots } }
-//       )
-
-//       res.status(200).json({ message: 'Invalid vote added successfully' })
-//     } catch (error) {
-//       res.status(500).json({ error: error.message })
-//       console.log('Error in addVoteToInvalidBallots: ', error.message)
-//     }
-//   },
-
-//   logoutUser: (req, res) => {
-//     try {
-//       res.cookie('jwt', '', { maxAge: 1 })
-//       res.status(200).json({ message: 'User logged out successfully' })
-//     } catch (err) {
-//       res.status(500).json({ error: err.message })
-//       console.log('Error in logout: ', err.message)
-//     }
-//   },
-// }
-
-// export default userController
+export default userController

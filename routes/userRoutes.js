@@ -1,26 +1,37 @@
-// import express from 'express'
-// import userController from '../controllers/userController.js'
-// import { protectUserRoute } from '../middlewares/protectRoute.js'
+import express from 'express'
+import userController from '../controllers/userController.js'
+import villageController from '../controllers/villageController.js'
+import districtController from '../controllers/districtController.js'
+import { protectUserRoute } from '../middlewares/protectRoute.js'
 
-// const router = express.Router()
+const router = express.Router()
 
-// router.post('/login', userController.loginUser)
-// router.post('/logout', userController.logoutUser)
-// router.post(
-//   '/validBallots',
-//   protectUserRoute,
-//   userController.addVotesToValidBallots
-// )
+//! route user
+router.post('/login', userController.loginUser)
+router.post('/logout', userController.logoutUser)
 
-// router.put(
-//   '/validBallots',
-//   protectUserRoute,
-//   userController.updateVotesToValidBallots
-// )
-// router.patch(
-//   '/invalidBallots',
-//   protectUserRoute,
-//   userController.addVoteToInvalidBallots
-// )
+//! route village
+// route validBallots
+router.post(
+  '/validBallots',
+  protectUserRoute,
+  villageController.addVotesToValidBallots
+)
+router.put(
+  '/validBallots',
+  protectUserRoute,
+  villageController.updateVotesToValidBallots
+)
 
-// export default router
+// route invalidBallots
+router.patch(
+  '/invalidBallots',
+  protectUserRoute,
+  villageController.addVoteToInvalidBallots
+)
+
+//! route district
+router.get('/districts', districtController.getDistricts)
+router.get('/districts/:id', districtController.getVotesSummaryByDistrict)
+
+export default router

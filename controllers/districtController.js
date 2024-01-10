@@ -55,7 +55,7 @@ const getVotesSummaryByDistrictHelper = async (districtId) => {
       detailedPartyVotes.push({
         partyId: partyDetails._id,
         partyName: partyDetails.party_name,
-        partySymbol: partyDetails.party_symbol,
+        code: partyDetails.code,
         votes: partyVoteCount,
       })
     }

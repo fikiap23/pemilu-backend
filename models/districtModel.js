@@ -1,18 +1,17 @@
 import mongoose from 'mongoose'
 
-const VillageSchema = mongoose.Schema({
-  village_name: {
+const DistrictSchema = mongoose.Schema({
+  district_name: {
     type: String,
     required: true,
   },
-  districtId: {
+  regencyId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'District',
+    ref: 'Regency',
     required: true,
   },
   total_voters: {
     type: Number,
-    required: true,
   },
   valid_ballots: [
     {
@@ -30,7 +29,14 @@ const VillageSchema = mongoose.Schema({
     type: Number,
     default: 0,
   },
+  villages: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Village',
+    },
+  ],
 })
 
-const Village = mongoose.model('Village', VillageSchema)
-export default Village
+const District = mongoose.model('District', DistrictSchema)
+
+export default District
